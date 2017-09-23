@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">dice</string>
+    <string name="pointTextView"></string>
+    <string name="clearButton">clear</string>
 </resources>
