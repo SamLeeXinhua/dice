@@ -7,6 +7,7 @@ import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,36 +44,21 @@ public class diceMainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // sleep 600 ms to make it smooth
-                SystemClock.sleep(300);
+//                SystemClock.sleep(300);
                 Toast toast = Toast.makeText(getApplicationContext(), "rolled", Toast.LENGTH_SHORT);
                 toast.show();
-
-                // pick up the image for empty dice.
-                try {
-                    InputStream zeroStream = getAssets().open("dice0.png");
-                    Drawable dTemp = Drawable.createFromStream(zeroStream,null);
-                    diceinitImage.setImageDrawable(dTemp);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                //sleep 300 ms again
-                SystemClock.sleep(200);
 
                 num = rand.nextInt(6) + 1;
                 totalNum = totalNum + num;
                 recentNum.add(num);
-                Log.i("locator: " + locator, "\nrecentNum: " + recentNum.get(locator));
+//                Log.i("locator: " + locator, "\nrecentNum: " + recentNum.get(locator));
                 // try to see if we rolled the same number
                 if(locator >= 3 && (recentNum.get(locator - 2).equals(recentNum.get(locator - 1)) && recentNum.get(locator - 2).equals(recentNum.get(locator)) )){
                     Toast showGree = Toast.makeText(getApplicationContext(), "Congrantulation! , same dice in 3 times, 10 points added", Toast.LENGTH_LONG);
                     showGree.show();
                     totalNum = totalNum +10;
                 }
-                //test code
-//                if(locator >= 3 && (recentNum.get(locator - 2).equals(recentNum.get(locator - 1)) )){
-//                    Log.i("trible same dice", ""+recentNum.get(locator));
-//                }
+
                 locator++;
 
                 String imageName = "dice" + num + ".png";
@@ -80,7 +66,16 @@ public class diceMainActivity extends AppCompatActivity {
                     //fetch the image and show it
                     InputStream stream = getAssets().open(imageName);
                     Drawable d = Drawable.createFromStream(stream, null);
+                    InputStream zeroStream = getAssets().open("diceinit.png");
+                    Drawable dTemp = Drawable.createFromStream(zeroStream,null);
+                    RotateAnimation rotate = new RotateAnimation(0f, 360f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                    rotate.setDuration(450);
+                    rotate.setFillAfter(false);
+                    diceinitImage.startAnimation(rotate);
+                    diceinitImage.setImageDrawable(dTemp);
+                    SystemClock.sleep(800);
                     diceinitImage.setImageDrawable(d);
+
                     point.setText("Total points : " + totalNum + "\n\nRolled times: " + rollTime++);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -101,6 +96,10 @@ public class diceMainActivity extends AppCompatActivity {
                     InputStream initStream = getAssets().open("diceinit.png");
                     Drawable dInit = Drawable.createFromStream(initStream,null);
                     diceinitImage.setImageDrawable(dInit);
+//                    RotateAnimation rotate = new RotateAnimation(0f, 360f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+//                    rotate.setDuration(2000);
+//                    rotate.setFillAfter(false);
+//                    diceinitImage.startAnimation(rotate);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
