@@ -1,11 +1,10 @@
 package com.samlee.jason.dice;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
@@ -20,9 +19,8 @@ import java.util.Random;
 
 public class diceMainActivity extends AppCompatActivity {
 
-    // this random is used to pick up the related dice image
     Random rand = new Random();
-    int num;
+    int currentImageNum;
     static int totalNum = 0 ;
     static int rollTime = 1;
     int locator = 0;
@@ -35,71 +33,84 @@ public class diceMainActivity extends AppCompatActivity {
 
         //this is the initial dice image, show this first before starting
         final ImageView diceinitImage = (ImageView) findViewById(R.id.diceinit);
+
+        // this is the bar for point and roll times shown
         final TextView point = (TextView) findViewById(R.id.totalPoint);
+
+        // button to clear the point and roll times
         final Button clearButton = (Button) findViewById(R.id.clearButton);
+
+        //cleant the arraylist
         recentNum.clear();
         //register the dice action
-        diceinitImage.setOnClickListener(new View.OnClickListener() {
+
+        diceinitImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
+            // catch the touch event here , only down event will be caught.
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
 
-                // sleep 600 ms to make it smooth
-//                SystemClock.sleep(300);
-                Toast toast = Toast.makeText(getApplicationContext(), "rolled", Toast.LENGTH_SHORT);
-                toast.show();
+                        // this is used for frame action
+                        AnimationDrawable anim = new AnimationDrawable();
+                        for (int i = 1; i <= 6 ; i++) {
+                            try {
 
-                num = rand.nextInt(6) + 1;
-                totalNum = totalNum + num;
-                recentNum.add(num);
-//                Log.i("locator: " + locator, "\nrecentNum: " + recentNum.get(locator));
-                // try to see if we rolled the same number
-                if(locator >= 3 && (recentNum.get(locator - 2).equals(recentNum.get(locator - 1)) && recentNum.get(locator - 2).equals(recentNum.get(locator)) )){
-                    Toast showGree = Toast.makeText(getApplicationContext(), "Congrantulation! , same dice in 3 times, 10 points added", Toast.LENGTH_LONG);
-                    showGree.show();
-                    totalNum = totalNum +10;
+                                // pick up 6 dices randomly
+                                currentImageNum = rand.nextInt(6) + 1;
+                                InputStream stream = getResources().getAssets().open("dice" + currentImageNum + ".png");
+                                Drawable d = Drawable.createFromStream(stream, null);
+                                anim.addFrame(d, 100);
+
+                            }catch (IOException e){
+                                e.printStackTrace();
+                            }
+                        }
+
+                        anim.setOneShot(true);
+                        diceinitImage.setImageDrawable(anim);
+                        anim.start();
+
+                        // this is for roate action
+                        RotateAnimation rotate = new RotateAnimation(0f, 360f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+                        rotate.setDuration(600);
+                        rotate.setFillAfter(false);
+                        diceinitImage.startAnimation(rotate);
+
+                        // catch the point and store into the array
+                        totalNum = totalNum + currentImageNum;
+                        recentNum.add(currentImageNum);
+
+                        // if 3 dices were rolled at continue 3 times, 10 additional bonus will be added
+                        if(locator >= 3 && (recentNum.get(locator - 2).equals(recentNum.get(locator - 1)) && recentNum.get(locator - 2).equals(recentNum.get(locator)) )){
+                            Toast showCheer = Toast.makeText(getApplicationContext(), "Cheer! , 10 bonus additional ", Toast.LENGTH_LONG);
+                            showCheer.show();
+                            totalNum = totalNum +10;
+                        }
+
+                        locator++;
+                        point.setText("Total bonus : " + totalNum + "\n\nRolled times: " + rollTime++);
+                        break;
+                    // We can add more action event here
                 }
-
-                locator++;
-
-                String imageName = "dice" + num + ".png";
-                try {
-                    //fetch the image and show it
-                    InputStream stream = getAssets().open(imageName);
-                    Drawable d = Drawable.createFromStream(stream, null);
-                    InputStream zeroStream = getAssets().open("diceinit.png");
-                    Drawable dTemp = Drawable.createFromStream(zeroStream,null);
-                    RotateAnimation rotate = new RotateAnimation(0f, 360f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-                    rotate.setDuration(450);
-                    rotate.setFillAfter(false);
-                    diceinitImage.startAnimation(rotate);
-                    diceinitImage.setImageDrawable(dTemp);
-                    SystemClock.sleep(800);
-                    diceinitImage.setImageDrawable(d);
-
-                    point.setText("Total points : " + totalNum + "\n\nRolled times: " + rollTime++);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                return false;
             }
         });
 
+        // clear button
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // clear the point and roll times
+                // clear the bonus and roll times
                 totalNum = 0;
                 rollTime = 1;
                 locator = 0;
                 recentNum.clear();
                 try {
+                    // show the initial image
                     InputStream initStream = getAssets().open("diceinit.png");
                     Drawable dInit = Drawable.createFromStream(initStream,null);
                     diceinitImage.setImageDrawable(dInit);
-//                    RotateAnimation rotate = new RotateAnimation(0f, 360f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-//                    rotate.setDuration(2000);
-//                    rotate.setFillAfter(false);
-//                    diceinitImage.startAnimation(rotate);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -16,11 +16,15 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:src="@drawable/diceinit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <TextView
         android:id="@+id/totalPoint"
@@ -54,6 +58,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/diceinit"
-        app:layout_constraintTop_toBottomOf="@+id/diceinit" />
+        app:layout_constraintTop_toBottomOf="@+id/diceinit"
+        />
 
 </android.support.constraint.ConstraintLayout>
