@@ -1,5 +1,6 @@
 package com.samlee.jason.dice;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -10,10 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,12 +29,12 @@ public class diceMainActivity extends AppCompatActivity {
 
     Random rand = new Random();
     int currentImageNum;
-    static int totalNum = 0 ;
-    static int rollTime = 1;
+    int totalNum = 0 ;
+    int rollTime = 1;
     int locator = 0;
     ArrayList recentNum = new ArrayList();
 
-    Handler handler=new Handler();
+//    Handler handler=new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,7 @@ public class diceMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dice_main);
 
         //this is the initial dice image, show this first before starting
-        final ImageView diceinitImage = (ImageView) findViewById(R.id.diceinit);
+        final ImageView diceinitImage = (ImageView) findViewById(R.id.diceOne);
 
         // this is for background , set it as invisable first
 //        final ImageView background = (ImageView) findViewById(R.id.background);
@@ -56,6 +55,7 @@ public class diceMainActivity extends AppCompatActivity {
 
         // button to clear the point and roll times
         final Button clearButton = (Button) findViewById(R.id.clearButton);
+        final Button diceButton = (Button) findViewById(R.id.moreDice);
 
         //cleant the arraylist
         recentNum.clear();
@@ -98,29 +98,27 @@ public class diceMainActivity extends AppCompatActivity {
                         diceSoundPool.play(diceSound,1,1,0,0,1);
                         // this is used for frame action
                         AnimationDrawable anim = new AnimationDrawable();
-                        for (int i = 1; i <= 6 ; i++) {
+                        for (int i = 1; i <= 3 ; i++) {
                             try {
 
                                 // pick up 6 dices randomly
                                 currentImageNum = rand.nextInt(6) + 1;
                                 InputStream stream = getResources().getAssets().open("dice" + currentImageNum + ".png");
                                 Drawable d = Drawable.createFromStream(stream, null);
-                                anim.addFrame(d, 100);
+                                anim.addFrame(d, 90);
 
                             }catch (IOException e){
                                 e.printStackTrace();
                             }
                         }
-//                        Log.i("orginal color:", diceinitImage.ge)
-//                        diceinitImage.setBackgroundColor(0x99000);
-//                        diceinitImage.setImageResource(R.drawable.bk);
+
                         anim.setOneShot(true);
                         diceinitImage.setImageDrawable(anim);
                         anim.start();
 
                         // this is for roate action
                         RotateAnimation rotate = new RotateAnimation(0f, 360f, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-                        rotate.setDuration(600);
+                        rotate.setDuration(280);
                         rotate.setFillAfter(false);
                         diceinitImage.startAnimation(rotate);
 
@@ -166,8 +164,7 @@ public class diceMainActivity extends AppCompatActivity {
             }
         });
 
-        // clear button
-
+        // clear button; clear the bonus and initial dice start screen
         clearButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -185,14 +182,56 @@ public class diceMainActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        // play the clear button sound
                         clearSoundPool.play(clearSound,1,1,0,0,1);
-
                         point.setText("Total points : 0" + "\n\nRolled times: 0" );
+
+                        // add the motion for clear button
                         clearButton.setBackgroundColor(0x99000);
                         break;
 
+                    // add the motion for clear button with above codes
                     case MotionEvent.ACTION_UP:
                         clearButton.setBackgroundResource(R.drawable.dice0);
+                        break;
+                }
+
+                return false;
+            }
+        });
+
+        // handler for more dice button
+        diceButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        totalNum = 0;
+                        rollTime = 1;
+                        locator = 0;
+                        recentNum.clear();
+                        try {
+                            // show the initial image
+                            InputStream initStream = getAssets().open("diceinit.png");
+                            Drawable dInit = Drawable.createFromStream(initStream,null);
+                            diceinitImage.setImageDrawable(dInit);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        // TODO  we will replace this button sound
+                        clearSoundPool.play(clearSound,1,1,0,0,1);
+                        diceButton.setBackgroundColor(0x99000);
+
+                        // open the new activity for more dice
+
+                        Intent moreDiceIntent = new Intent(diceMainActivity.this, dicesActivity.class);
+                        startActivity(moreDiceIntent);
+
+                        break;
+
+                    // add the motion for more dice button with above codes
+                    case MotionEvent.ACTION_UP:
+                        diceButton.setBackgroundResource(R.drawable.dice0);
                         break;
                 }
 
