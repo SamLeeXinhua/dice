@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <!-- Search, should appear as action button -->
+    <item
+        android:id="@+id/action_about"
+        android:fontFamily="casual"
+        android:icon="@android:drawable/ic_menu_help"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:title="@string/action_about"
+        app:showAsAction="always"
+        android:onClick="aboutDiceClickHandler"/>
+    />
+</menu>

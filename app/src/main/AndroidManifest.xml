@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.samlee.jason.dice">
+    package="com.samlee.jason.dice"
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <application
         android:allowBackup="true"
@@ -16,7 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".dicesActivity"
+        <activity
+            android:name=".dicesActivity"
+            android:parentActivityName=".diceMainActivity" />
+        <activity
+            android:name=".aboutActivity"
+            android:parentActivityName=".dicesActivity" />
+        <activity
+            android:name=".infoActivity"
             android:parentActivityName=".diceMainActivity"></activity>
     </application>
 

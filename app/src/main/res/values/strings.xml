@@ -3,4 +3,10 @@
     <string name="pointTextView"></string>
     <string name="clearButton">clear</string>
     <string name="moreDice">dices</string>
+    <string name="action_about">about</string>
+    <string name="action_dice">dice</string>
+    <string name="emailAddress">850731097@qq.com</string>
+    <string name="description"></string>
+    <!--<string name="versionCode">1</string>-->
+    <!--<string name="versionName">1.0</string>-->
 </resources>

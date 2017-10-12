@@ -1,6 +1,8 @@
 package com.samlee.jason.dice;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -9,8 +11,10 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.RotateAnimation;
@@ -33,6 +37,14 @@ public class diceMainActivity extends AppCompatActivity {
     int rollTime = 1;
     int locator = 0;
     ArrayList recentNum = new ArrayList();
+
+    // this onCreateOptionsMenu is  used to show the element on action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.dices_main_activity_actions, menu);
+        return true;
+    }
 
 //    Handler handler=new Handler();
 
@@ -238,6 +250,15 @@ public class diceMainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+    }
+
+
+    public void diceClickHandler(MenuItem item) {
+
+//         open about activity
+        Intent infoIntent = new Intent(diceMainActivity.this, infoActivity.class);
+        startActivity(infoIntent);
 
     }
 

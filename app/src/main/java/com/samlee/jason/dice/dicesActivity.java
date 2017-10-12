@@ -1,5 +1,6 @@
 package com.samlee.jason.dice;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -7,8 +8,11 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.RotateAnimation;
@@ -20,10 +24,10 @@ import android.widget.VideoView;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class dicesActivity extends AppCompatActivity {
+
 
 
     Random randOne = new Random();
@@ -36,6 +40,14 @@ public class dicesActivity extends AppCompatActivity {
     int diceTotalNum = 0 ;
     int diceRollTime = 1;
 
+    // this onCreateOptionsMenu is  used to show the element on action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.dices_activity_actions, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +56,7 @@ public class dicesActivity extends AppCompatActivity {
         final ImageView diceOneImage = (ImageView) findViewById(R.id.diceOne);
         final ImageView diceTwoImage = (ImageView) findViewById(R.id.diceTwo);
         final ImageView diceThreeImage = (ImageView) findViewById(R.id.diceThree);
+        final MenuItem aboutMenu = (MenuItem) findViewById(R.id.action_about);
 
         final TextView point = (TextView) findViewById(R.id.totalPoint);
 
@@ -409,6 +422,14 @@ public class dicesActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+    }
+
+    public void aboutDiceClickHandler(MenuItem item) {
+
+        // open about activity
+        Intent aboutIntent = new Intent(dicesActivity.this, aboutActivity.class);
+        startActivity(aboutIntent);
 
     }
 }
